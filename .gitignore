@@ -1,0 +1,5 @@
+node_modules/
+.DS_Store
+# 원본 사진·데이터는 공개 저장소에 올리지 않는다 (index.html에 암호화되어 들어감)
+src/
+.claude/
