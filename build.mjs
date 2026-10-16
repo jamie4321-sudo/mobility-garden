@@ -129,7 +129,7 @@ document.getElementById("gate-form").addEventListener("submit",async ev=>{
 })();
 </script>`;
 
-const favicon = `<link rel="icon" href="data:image/svg+xml,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🌱</text></svg>")}">`;
+const favicon = `<link rel="icon" href="data:image/svg+xml,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='32' fill='#eeff00'/><text x='32' y='33' text-anchor='middle' dominant-baseline='central' font-family='Arial, Helvetica, sans-serif' font-weight='800' font-size='21' letter-spacing='-0.5' fill='#0a0a0b'>LKG</text></svg>")}">`;
 const out = `<!doctype html>
 <html lang="ko">
 <head>
