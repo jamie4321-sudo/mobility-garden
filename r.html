@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>월간 리포트 · MOBILITY GARDEN</title>
+<!-- 모빌리티 가든 공개 리포트: 로그인 없이 링크로 보는 월간 리포트 한 장.
+     링크 = r.html#<보관 이름>.<열쇠>. 리포트는 리더가 앱에서 만든 사본(그 시점 기준)이고,
+     열쇠는 링크 # 뒤에만 있어 서버로 가지 않는다. 사본은 Storage mg-photos/share/ 에 암호화돼 있다. -->
+<style>
+@font-face{font-family:"Kakao Big Sans";font-weight:400;font-display:swap;src:url(fonts/kbs-regular.woff2) format("woff2")}
+@font-face{font-family:"Kakao Big Sans";font-weight:700;font-display:swap;src:url(fonts/kbs-bold.woff2) format("woff2")}
+@font-face{font-family:"Kakao Big Sans";font-weight:800 900;font-display:swap;src:url(fonts/kbs-extrabold.woff2) format("woff2")}
+html,body{margin:0;background:#f4f5f1;color:#16160f;font-family:"Kakao Big Sans",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){html,body{background:#0a0a0b;color:#f2f2ee}}
+.pub{max-width:940px;margin:0 auto;padding:20px 16px 60px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box}
+.pub-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11px;letter-spacing:1px;opacity:.85}
+.pub-bar b{font-size:13px;font-weight:800;letter-spacing:.3px}
+.pub-bar span:not(.sp){color:var(--ink-3,#8f8f85)}
+.pub-bar .sp{flex:1}
+.pub-msg{margin:40px 0;text-align:center;font-size:14px;color:var(--ink-3,#8f8f85);line-height:1.6}
+#pdf[hidden]{display:none}
+@media print{.pub-bar{display:none!important}.pub{max-width:none;padding:0}}
+</style>
+</head>
+<body>
+<main class="pub">
+  <div class="pub-bar"><b>MOBILITY GARDEN</b><span>KAKAO MOBILITY · LINKAGELAB</span><span class="sp"></span>
+    <button type="button" class="add-btn pdf-btn" id="pdf" hidden><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M12 10v7M9 14l3 3 3-3"/></svg>PDF로 저장</button></div>
+  <article class="report" id="report"><p class="pub-msg">리포트를 불러오는 중이에요…</p></article>
+</main>
+<script>
+(async () => {
+  const SB_URL = "https://qdwynctnhjndkmykecbu.supabase.co", BUCKET = "mg-photos";
+  const box = document.getElementById("report");
+  const fail = t => { box.innerHTML = `<p class="pub-msg">${t}</p>`; };
+  const [id, k] = location.hash.slice(1).split(".");
+  if (!/^[0-9a-f-]{36}$/.test(id || "") || !k) return fail("링크가 올바르지 않아요.<br>받은 링크 전체를 그대로 열어 주세요.");
+  const u8 = s => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0));
+  try {
+    const r = await fetch(`${SB_URL}/storage/v1/object/public/${BUCKET}/share/${id}.bin`, { cache: "no-store" });
+    if (!r.ok) return fail("리포트를 찾지 못했어요.<br>링크가 지워졌거나 잘못됐을 수 있어요.");
+    const buf = new Uint8Array(await r.arrayBuffer());
+    const key = await crypto.subtle.importKey("raw", u8(k), "AES-GCM", false, ["decrypt"]);
+    const d = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, key, buf.slice(12))));
+    const st = document.createElement("style"); st.textContent = d.css; document.head.appendChild(st);
+    box.innerHTML = d.html;
+    box.querySelectorAll("button").forEach(b => { b.tabIndex = -1; b.style.pointerEvents = "none"; });   // 사본이라 누르는 기능은 없다
+    document.title = d.title || document.title;
+    const pdf = document.getElementById("pdf"); pdf.hidden = false;
+    pdf.onclick = () => { const t = document.title; document.title = d.file || t; window.print(); setTimeout(() => document.title = t, 500); };
+  } catch (e) { console.warn(e); fail("리포트를 열지 못했어요.<br>링크 끝부분까지 모두 복사됐는지 확인해 주세요."); }
+})();
+addEventListener("hashchange", () => location.reload());
+</script>
+</body>
+</html>

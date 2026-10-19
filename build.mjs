@@ -20,7 +20,7 @@ if (!SEC.appKey) { SEC.appKey = b64(crypto.getRandomValues(new Uint8Array(32)));
 const MASTER_ID = (process.env.MG_MASTER_ID || SEC.masterId || 'jamie').trim().toLowerCase(); // 총괄 관리자 로그인 이메일(로그인 창에 jamie 만 써도 됨)
 const MASTER_NAME = process.env.MG_MASTER_NAME || SEC.masterName || '총괄 관리자';
 const SB_URL = (process.env.MG_SB_URL || SEC.sbUrl || '').replace(/\/+$/, ''), SB_KEY = process.env.MG_SB_KEY || SEC.sbKey || '', SB_TOKEN = process.env.MG_SB_TOKEN || SEC.sbToken || '';
-if (SB_TOKEN) for (const n of ['schema', 'storage', 'accounts', 'delete'])
+if (SB_TOKEN) for (const n of ['schema', 'storage', 'accounts', 'delete', 'share'])
   fs.writeFileSync(`src/${n}.filled.sql`, fs.readFileSync(`supabase/${n}.sql`, 'utf8').replaceAll('__MG_TOKEN__', SB_TOKEN).replaceAll('__MG_MASTER__', SEC.masterToken));
 
 // ── 앱 조립 ──
@@ -147,3 +147,7 @@ ${gate}
 `;
 fs.writeFileSync('index.html', out);
 console.log(`index.html ${(out.length / 1e6).toFixed(2)}MB · 사진 ${photos.split('data:image').length - 1}장 · 기본 리더 계정: ${MASTER_ID}`);
+
+// 공개 리포트 보기 페이지 (로그인 없이 링크로 여는 월간 리포트 사본)
+fs.writeFileSync('r.html', fs.readFileSync('tools/r.html', 'utf8').replace('/*__SB_URL__*/', SB_URL));
+console.log('r.html 공개 리포트 페이지');

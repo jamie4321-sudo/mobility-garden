@@ -6,7 +6,7 @@
 -- 버킷은 '공개 읽기'라 주소를 아는 경우에만 열리고, 목록 보기는 막혀 있습니다. 올리기는 x-mg-token 이 맞을 때만 됩니다.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('mg-photos', 'mg-photos', true, 3145728, array['image/jpeg','image/png','image/webp'])
+values ('mg-photos', 'mg-photos', true, 3145728, array['image/jpeg','image/png','image/webp','application/octet-stream'])
 on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
