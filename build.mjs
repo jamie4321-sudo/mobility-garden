@@ -136,6 +136,16 @@ const out = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="링키지랩 가든관리 페이지">
+<meta property="og:title" content="링키지랩 가든관리 페이지">
+<meta property="og:description" content="연결의 시작 · 모빌리티 가든 · 카카오모빌리티">
+<meta property="og:url" content="https://mobility-garden.pages.dev/">
+<meta property="og:image" content="https://mobility-garden.pages.dev/og.png?v=1">
+<meta property="og:image:width" content="400">
+<meta property="og:image:height" content="400">
+<meta name="description" content="연결의 시작 · 모빌리티 가든 · 카카오모빌리티">
+<meta name="twitter:card" content="summary">
 ${favicon}
 ${head}
 </head>
